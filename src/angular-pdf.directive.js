@@ -60,7 +60,7 @@ export const NgPdf = ($window, $document, $log) => {
         });
       });
 
-      PDFJS.disableWorker = true;
+      //PDFJS.disableWorker = true;
       scope.pageNum = pageToDisplay;
 
       scope.renderPage = num => {
@@ -74,7 +74,7 @@ export const NgPdf = ($window, $document, $log) => {
           let renderContext;
 
           if (pageFit) {
-            viewport = page.getViewport(1);
+            viewport = page.getViewport({scale:1});
             const clientRect = element[0].getBoundingClientRect();
             pageWidthScale = clientRect.width / viewport.width;
             if (limitHeight) {
@@ -82,7 +82,7 @@ export const NgPdf = ($window, $document, $log) => {
             }
             scale = pageWidthScale;
           }
-          viewport = page.getViewport(scale);
+          viewport = page.getViewport({scale:scale});
 
           setCanvasDimensions(canvas, viewport.width, viewport.height);
 
@@ -172,10 +172,11 @@ export const NgPdf = ($window, $document, $log) => {
         }
 
         if (url && url.length) {
-          pdfLoaderTask = PDFJS.getDocument(params);
+          //pdfLoaderTask = PDFJS.getDocument(params);
+          pdfLoaderTask = pdfjsLib.getDocument(url);
           pdfLoaderTask.onProgress = scope.onProgress;
           pdfLoaderTask.onPassword = scope.onPassword;
-          pdfLoaderTask.then(
+          pdfLoaderTask.promise.then(
             _pdfDoc => {
               if (angular.isFunction(scope.onLoad)) {
                 scope.onLoad();
